@@ -1,11 +1,23 @@
 from typing import List
 
-
 todo_list: List[str] = []
 
-def line_seperator():
-    """Seperate line for CLI"""
+def line_separator():
+    """Separate line for CLI"""
     print("#===========================#")
+    
+def load_tasks_from_txt():
+    """Load task from todo.txt into global todo_list"""
+    try:
+        with open('todo.txt', 'r') as f:
+            content = f.readlines()
+            for line in content:
+                line = line.strip()
+                todo_list.append(line)
+    except FileNotFoundError:
+        with open('todo.txt', 'w') as f:
+            f.write('')
+        print("Todo.txt file not found. File created !")
 
 def add_task(task: str) -> None:
     """Add a task to the global todo_list.
@@ -17,8 +29,11 @@ Args:
 
 def view_tasks() -> None:
     """View all tasks in global todo_list."""
-    for index, item in enumerate(todo_list, start=1):
-        print(f"{index}. | {item} |")
+    if todo_list == []:
+        print("No task exists yet")
+    else:
+        for index, item in enumerate(todo_list, start=1):
+            print(f"{index}. | {item} |")
 
 def delete_task(task_id: int) -> None:
     """Delete a task from the global todo_list.
@@ -35,14 +50,16 @@ Args:
 def save_tasks_to_txt() -> None:
     """Save the contents of the global todo_list as text file (todo.txt)."""
     with open("todo.txt", "w") as f:
-        for index, item in enumerate(todo_list, start=1):
-            f.write(f"{index}. | {item} |\n")
+        for item in todo_list:
+            f.write(f"{item}\n")
     print("Changes saved to todo.txt")
       
 
 if __name__ == "__main__":  
+    load_tasks_from_txt()
+    
     while True:
-        try:
+        try:            
             action_input = int(input(
                 """Welcome to todo-cli
             Type a number to select an action:
@@ -55,22 +72,21 @@ if __name__ == "__main__":
             ))
 
         
-
             if action_input == 1:
-                line_seperator()
+                line_separator()
                 input_task = input("Add a new task: ")
                 add_task(input_task)
-                line_seperator()
+                line_separator()
             elif action_input == 2:
-                line_seperator()
+                line_separator()
                 view_tasks()
             elif action_input == 3:
-                line_seperator()
+                line_separator()
                 view_tasks()
                 input_task_id = int(input("Type a task number to delete: "))
                 delete_task(input_task_id)
             elif action_input == 4:
-                line_seperator()
+                line_separator()
                 save_tasks_to_txt() 
             elif action_input == 5:
                 break
